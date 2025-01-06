@@ -1,0 +1,35 @@
+'use server';
+
+import { nanoid } from 'nanoid'
+import { liveblocks } from '../liveblocks';
+import { revalidatePath } from 'next/cache';
+import { getAccessType, parseStringify } from '../utils';
+import { redirect } from 'next/navigation';
+
+export const createDocument = async ({ userId, email }: CreateDocumentParams) => {
+  const roomId = nanoid();  // creating a unique room Id for every room .
+
+  try {
+    const metadata = {
+      creatorId: userId,
+      email,
+      title: 'Untitled'
+    }
+
+    const usersAccesses: RoomAccesses = {
+      [email]: ['room:write']
+    }
+
+    const room = await liveblocks.createRoom(roomId, {
+      metadata,
+      usersAccesses,
+      defaultAccesses: []
+    });
+    
+    revalidatePath('/');
+
+    return (room);
+  } catch (error) {
+    console.log(`Error happened while creating a room: ${error}`);
+  }
+}
