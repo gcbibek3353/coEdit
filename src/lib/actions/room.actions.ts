@@ -3,11 +3,11 @@
 import { nanoid } from 'nanoid'
 import { liveblocks } from '../liveblocks';
 import { revalidatePath } from 'next/cache';
-import { getAccessType, parseStringify } from '../utils';
-import { redirect } from 'next/navigation';
+// import { getAccessType, parseStringify } from '../utils';
+// import { redirect } from 'next/navigation';
 
 export const createDocument = async ({ userId, email }: CreateDocumentParams) => {
-  const roomId = nanoid();  // creating a unique room Id for every room .
+  const roomId = nanoid();  // creating a unique room Id for every room.
 
   try {
     const metadata = {
@@ -26,7 +26,7 @@ export const createDocument = async ({ userId, email }: CreateDocumentParams) =>
       defaultAccesses: []
     });
     
-    revalidatePath('/');
+    revalidatePath('/');  // revalidatePath('/') is used to delete the cached data at '/' so that new data contains the currently formed Document also
 
     return (room);
   } catch (error) {

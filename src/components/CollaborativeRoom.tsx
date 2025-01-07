@@ -7,7 +7,7 @@ import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs'
 
 const CollaborativeRoom = () => {
   return (
-    // Room Provider is not provided at root element but It is provided to this component 
+    // Room Provider is not provided at root element but It is provided to this component because we want multiple rooms 
     <RoomProvider id="my-room">
     <ClientSideSuspense fallback={<Loader />}>
       <div className='collaborative-room'>
