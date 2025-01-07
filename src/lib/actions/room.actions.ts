@@ -3,6 +3,8 @@
 import { nanoid } from 'nanoid'
 import { liveblocks } from '../liveblocks';
 import { revalidatePath } from 'next/cache';
+import { error } from 'console';
+import { parseStringify } from '../utils';
 // import { getAccessType, parseStringify } from '../utils';
 // import { redirect } from 'next/navigation';
 
@@ -23,7 +25,7 @@ export const createDocument = async ({ userId, email }: CreateDocumentParams) =>
     const room = await liveblocks.createRoom(roomId, {
       metadata,
       usersAccesses,
-      defaultAccesses: []
+      defaultAccesses: ['room:write']
     });
     
     revalidatePath('/');  // revalidatePath('/') is used to delete the cached data at '/' so that new data contains the currently formed Document also
@@ -31,5 +33,21 @@ export const createDocument = async ({ userId, email }: CreateDocumentParams) =>
     return (room);
   } catch (error) {
     console.log(`Error happened while creating a room: ${error}`);
+  }
+}
+
+export const getDocument = async ({userId,roomId} : {userId : string,roomId : string})=>{
+  try {
+    
+    const room = await liveblocks.getRoom(roomId);
+  
+    // const hasAccess = Object.keys(room.usersAccesses).includes(userId);
+  
+    // if(!hasAccess) throw new Error(`You don't have access to this document`);
+  
+    return parseStringify(room);
+  } catch (error) {
+    console.log(`Error occured while getting room`);
+    
   }
 }
