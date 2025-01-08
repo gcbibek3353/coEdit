@@ -3,7 +3,7 @@ import Image from 'next/image';
 import React from 'react'
 
 const ActiveCollaborators = () => {
-    const others = useOthers();
+    const others = useOthers();  // useOthers hook from liveblocks returns the list of users that are currently connected to the room along with their data. 
 
     const collaborators = others.map(other => other.info);
 

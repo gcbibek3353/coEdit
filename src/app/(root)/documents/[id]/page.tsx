@@ -12,9 +12,10 @@ const page = async({params} : SearchParamProps) => {
 
   const room = await getDocument({
     roomId : id,
-    userId : clerkUser.emailAddresses[0].emailAddress
+    userId : clerkUser.emailAddresses[0].emailAddress,
   })
   if(!room) redirect('/');
+  console.log('room data is ' + room);
 
   // We need to get the users access permissions 
 
@@ -22,7 +23,7 @@ const page = async({params} : SearchParamProps) => {
     <main className='flex flex-col w-full items-center'>
      <CollaborativeRoom 
      roomId = {id}
-     roomMetadata = {room.metaData}
+     roomMetadata = {room.metadata}
      />
     </main>
   )
