@@ -9,24 +9,22 @@ const page = async({params} : SearchParamProps) => {
   const clerkUser = await currentUser();
 
   if(!clerkUser) redirect('/sign-in');
-  // console.log(id,clerkUser);
 
   const room = await getDocument({
     roomId : id,
     userId : clerkUser.emailAddresses[0].emailAddress,
   })
   if(!room) redirect('/');
-  // console.log('room data is ' + room);
 
   const userIds = Object.keys(room.usersAccesses);
+  
   const users = await getClerkUsers({userIds});
-  console.log(users);
   
 
-  // const usersData = users.map((user:User)=>({
-  //   ...user,
-  //   userType : room.usersAcceeses[user.email]?.includes('room:write') ? 'editor' : 'viewer'
-  // }))
+  const usersData = users.map((user:User)=>({
+    ...user,
+    userType : room.usersAcceeses[user.email]?.includes('room:write') ? 'editor' : 'viewer'
+  }))
 
   const currentUserType = room.usersAccesses[clerkUser.emailAddresses[0].emailAddress]?.includes('room:write') ? 'editor' : 'viewer';
 
@@ -37,7 +35,7 @@ const page = async({params} : SearchParamProps) => {
      <CollaborativeRoom 
      roomId = {id}
      roomMetadata = {room.metadata}
-    //  users = {usersData}
+     users = {usersData}
      currentUserType = {currentUserType}
      />
     </main>

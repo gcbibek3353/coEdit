@@ -28,7 +28,7 @@ const CollaborativeRoom = ({ roomId, roomMetadata,users,currentUserType }: Colla
           if(updatedDocument) setLoading(false);
         }
       } catch (error) {
-        console.log(error);
+        console.log(`Error is ` + error);
       }
       setLoading(false);
     }
@@ -120,4 +120,4 @@ const CollaborativeRoom = ({ roomId, roomMetadata,users,currentUserType }: Colla
   )
 }
 
-export default CollaborativeRoom
+export default CollaborativeRoom;
