@@ -4,7 +4,8 @@ import { nanoid } from 'nanoid'
 import { liveblocks } from '../liveblocks';
 import { revalidatePath } from 'next/cache';
 import { error } from 'console';
-import { parseStringify } from '../utils';
+import { getAccessType, parseStringify } from '../utils';
+import { parse } from 'path';
 // import { getAccessType, parseStringify } from '../utils';
 // import { redirect } from 'next/navigation';
 
@@ -25,7 +26,7 @@ export const createDocument = async ({ userId, email }: CreateDocumentParams) =>
     const room = await liveblocks.createRoom(roomId, {
       metadata,
       usersAccesses,
-      defaultAccesses: ['room:write']
+      defaultAccesses: []
     });
     
     revalidatePath('/');  // revalidatePath('/') is used to delete the cached data at '/' so that new data contains the currently formed Document also
@@ -41,9 +42,9 @@ export const getDocument = async ({userId,roomId} : {userId : string,roomId : st
     
     const room = await liveblocks.getRoom(roomId);
     
-    // const hasAccess = Object.keys(room.usersAccesses).includes(userId);
+    const hasAccess = Object.keys(room.usersAccesses).includes(userId);
   
-    // if(!hasAccess) throw new Error(`You don't have access to this document`);
+    if(!hasAccess) throw new Error(`You don't have access to this document`);
   
     return parseStringify(room);
   } catch (error) {
@@ -76,5 +77,45 @@ export const getDocuments = async (email : string )=>{
     return parseStringify(rooms);
   } catch (error) {
     console.log(`Error occured while getting rooms`);
+  }
+}
+
+export const updateDocumentAccess = async ({roomId,email,userType,updatedBy} : ShareDocumentParams)=>{
+  try {
+    const usersAccesses : RoomAccesses = {
+      [email] : getAccessType(userType) as AccessType,
+    }
+
+    const room = await liveblocks.updateRoom(roomId,{usersAccesses});
+
+    if(room){
+      // Send a notification to the user
+      console.log(`Document access updated by ${updatedBy}`);
+    }
+
+    revalidatePath(`/documents/${roomId}`);
+    return parseStringify(room);
+    
+  } catch (error) {
+    console.log(`Error occured while updating document access`);
+  }
+}
+
+export const removeCollaborator = async ({roomId,email} : {roomId : string, email : string})=>{
+  try {
+    const room = await liveblocks.getRoom(roomId);
+    if(room.metadata.email === email){
+      throw new Error(`Owner cannot be removed`);
+    }
+    const updatedRoom = await liveblocks.updateRoom(roomId,{
+      usersAccesses : {
+        [email] : null
+      }
+    });
+
+    revalidatePath(`/documents/${roomId}`);
+    return parseStringify(updatedRoom);
+  } catch (error) {
+    console.log(`Error occured while removing collaborator`);
   }
 }

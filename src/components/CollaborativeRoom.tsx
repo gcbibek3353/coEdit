@@ -9,6 +9,7 @@ import { KeyboardEvent, useEffect, useRef, useState } from 'react'
 import { Input } from './ui/input'
 import Image from 'next/image'
 import { updateDocument } from '@/lib/actions/room.actions'
+import ShareModal from './ShareModal'
 
 const CollaborativeRoom = ({ roomId, roomMetadata,users,currentUserType }: CollaborativeRoomProps) => {
 
@@ -105,6 +106,12 @@ const CollaborativeRoom = ({ roomId, roomMetadata,users,currentUserType }: Colla
             </div>
             <div className='flex w-full flex-1 justify-end gap-2 sm:gap-3'>
               <ActiveCollaborators />
+              <ShareModal
+              roomId={roomId}
+              collaborators={users}
+              creatorId={roomMetadata.creatorId}
+              currentUserType={currentUserType}
+              />
               <SignedOut>
                 <SignInButton />
               </SignedOut>
