@@ -3,13 +3,8 @@
 import { nanoid } from 'nanoid'
 import { liveblocks } from '../liveblocks';
 import { revalidatePath } from 'next/cache';
-import { error } from 'console';
 import { getAccessType, parseStringify } from '../utils';
-import { parse } from 'path';
 import { redirect } from 'next/navigation';
-import { emit, title } from 'process';
-// import { getAccessType, parseStringify } from '../utils';
-// import { redirect } from 'next/navigation';
 
 export const createDocument = async ({ userId, email }: CreateDocumentParams) => {
   const roomId = nanoid();  // creating a unique room Id for every room.
@@ -67,8 +62,7 @@ export const updateDocument = async ( roomId : string, title : string)=>{
     return parseStringify(updatedRoom);
 
   } catch (error) {
-    console.log(`Error happened while updating room title`);
-    
+    console.log(`Error happened while updating room title ${error}`); 
   }
 }
 
@@ -111,7 +105,7 @@ export const updateDocumentAccess = async ({roomId,email,userType,updatedBy} : S
     return parseStringify(room);
     
   } catch (error) {
-    console.log(`Error occured while updating document access`);
+    console.log(`Error occured while updating document access ${error}`);
   }
 }
 
@@ -130,7 +124,7 @@ export const removeCollaborator = async ({roomId,email} : {roomId : string, emai
     revalidatePath(`/documents/${roomId}`);
     return parseStringify(updatedRoom);
   } catch (error) {
-    console.log(`Error occured while removing collaborator`);
+    console.log(`Error occured while removing collaborator ${error}`);
   }
 }
 
@@ -141,6 +135,6 @@ export const deleteDocument = async (roomId : string)=>{
     redirect('/');
     return room;
   } catch (error) {
-    console.log(`Error occured while deleting document`);
+    console.log(`Error occured while deleting document ${error}`);
   }
 }

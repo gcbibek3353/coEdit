@@ -1,6 +1,5 @@
 import AddDocumentBtn from "@/components/AddDocumentBtn";
 import Header from "@/components/Header";
-import { Button } from "@/components/ui/button";
 import { SignedIn, UserButton } from "@clerk/nextjs";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from 'next/navigation'
@@ -39,9 +38,9 @@ export default async function Home() {
             />
           </div>
           <ul className="document-ul">
-            {roomDocuments.data.map((document : any)=>(
-              <li key={document.id} className="document-list-item">
-                <Link href={`/documents/${document.id}`} className="flex flex-1 items-center gap-4">
+            {roomDocuments.data.map(({id,metadata,createdAt} : {id : string, metadata : RoomMetadata, createdAt : string })=>(
+              <li key={id} className="document-list-item">
+                <Link href={`/documents/${id}`} className="flex flex-1 items-center gap-4">
                   <div className="hidden rounded-md bg-dark-500 p-2 sm:block">
                     <Image 
                     src="/assets/icons/doc.svg"
@@ -51,11 +50,11 @@ export default async function Home() {
                     />
                   </div>
                   <div className="space-y-1">
-                    <p className="line-clamp-1 text-lg">{document.metadata.title}</p>
-                    <p className="text-sm font-light text-blue-100">Created About {dateConverter(document.createdAt)} </p>
+                    <p className="line-clamp-1 text-lg">{metadata.title}</p>
+                    <p className="text-sm font-light text-blue-100">Created About {dateConverter(createdAt)} </p>
                   </div>
                 </Link>
-                <DeleteModal roomId={document.id}/>
+                <DeleteModal roomId={id}/>
                 {/* we need to create a delete button here */}
               </li>
             ))

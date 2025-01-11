@@ -3,7 +3,6 @@ import { ClientSideSuspense, LiveblocksProvider } from '@liveblocks/react/suspen
 import { ReactNode } from 'react'
 import Loader from '@/components/Loader'
 import { getClerkUsers, getDocumentUsers } from '@/lib/actions/user.actions'
-import { text } from 'stream/consumers'
 import { useUser } from '@clerk/nextjs'
 
 const Provider = ({ children }: { children: ReactNode }) => {

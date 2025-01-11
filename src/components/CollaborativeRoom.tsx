@@ -13,8 +13,8 @@ import ShareModal from './ShareModal'
 
 const CollaborativeRoom = ({ roomId, roomMetadata,users,currentUserType }: CollaborativeRoomProps) => {
 
-  const [editing, setEditing] = useState<Boolean>(false);
-  const [loading, setLoading] = useState<Boolean>(false);
+  const [editing, setEditing] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [documentTitle, setDocumentTitle] = useState<string>(roomMetadata.title);
 
   const containerRef = useRef<HTMLDivElement>(null);

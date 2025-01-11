@@ -16,7 +16,7 @@ const AddDocumentBtn = ({userId,email} : AddDocumentBtnProps) => {
                 router.push(`/documents/${room.id}`);
             }
         } catch (error) {
-            
+            console.log(`Error happened while creating a document: ${error}`);
         }
     }
 
