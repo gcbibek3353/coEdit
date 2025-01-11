@@ -6,6 +6,8 @@ import { revalidatePath } from 'next/cache';
 import { error } from 'console';
 import { getAccessType, parseStringify } from '../utils';
 import { parse } from 'path';
+import { redirect } from 'next/navigation';
+import { emit, title } from 'process';
 // import { getAccessType, parseStringify } from '../utils';
 // import { redirect } from 'next/navigation';
 
@@ -89,8 +91,20 @@ export const updateDocumentAccess = async ({roomId,email,userType,updatedBy} : S
     const room = await liveblocks.updateRoom(roomId,{usersAccesses});
 
     if(room){
-      // Send a notification to the user
-      console.log(`Document access updated by ${updatedBy}`);
+      const notificationId = nanoid();
+      await liveblocks.triggerInboxNotification({
+        userId : email,
+        kind : '$documentAccess',
+        subjectId : notificationId,
+        activityData : {
+          userType,
+          title : `You have been granted ${userType} access to the document by ${updatedBy.name}`, 
+          updatedBy : updatedBy.name,
+          avatar : updatedBy.avatar,
+          email : updatedBy.email,
+          
+        }
+      })
     }
 
     revalidatePath(`/documents/${roomId}`);
@@ -117,5 +131,16 @@ export const removeCollaborator = async ({roomId,email} : {roomId : string, emai
     return parseStringify(updatedRoom);
   } catch (error) {
     console.log(`Error occured while removing collaborator`);
+  }
+}
+
+export const deleteDocument = async (roomId : string)=>{
+  try {
+    const room = await liveblocks.deleteRoom(roomId);
+    revalidatePath('/');
+    redirect('/');
+    return room;
+  } catch (error) {
+    console.log(`Error occured while deleting document`);
   }
 }
